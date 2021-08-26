@@ -7,6 +7,12 @@ import (
 
 // "Hello from Snippetbox" と返却する home ハンドラを定義する
 func home(w http.ResponseWriter, r *http.Request) {
+	// ルートURL以外のリクエストがきたら 404 Not Found とする
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+
 	if _, err := w.Write([]byte("Hello from Snippetbox")); err != nil {
 		log.Fatalf("error occurred in home handler: %w", err)
 	}
