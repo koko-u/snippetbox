@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 // "Hello from Snippetbox" と返却する home ハンドラを定義する
@@ -19,8 +21,13 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func showSnippet(w http.ResponseWriter, r *http.Request) {
-	if _, err := w.Write([]byte("Display a specific snippet...")); err != nil {
-		log.Fatalf("error occurred in showSnippet handler: %w", err)
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil || id < 0 {
+		http.NotFound(w, r)
+		return
+	}
+	if _, err := fmt.Fprintf(w, "Display a specific snippet with ID:%d...", id); err != nil {
+		http.Error(w, "Error has occurred.", http.StatusInternalServerError)
 	}
 }
 
